@@ -1,14 +1,15 @@
-# installing the package from the GitHub repo
-#if(!require(devtools)) install.packages('devtools')
-#devtools::install_github('bnasr/phenocamapi')
-library(tidyverse)
-library(rstanarm)
-library(bayesplot)
-library(loo)
+#############################################################################
+#                           Maximilian Wesemeyer                            #
+# Getting phenocam locations; write csv to use with GEE; Prepare data       #
+# for modelling                                                             #
+#############################################################################
 # loading the packages
+
 library(phenocamapi)
-library(splitstackshape)
 library(dplyr)
+#############################################################################
+#
+
 phenos <- get_phenos()
 phenos <- phenos[which(phenos$active == TRUE),]
 phenos <- phenos[,]
@@ -23,31 +24,21 @@ out <- data.frame()
 for(i in c(8,10)) {
   s <- phenos[which(phenos$ecoregion==i),]
   out <- rbind(out, sample_n(s,10))
-  
-}
+  }
 
 out1 = out[1:5,c(1:3)]
 out2 = out[5:10, 1:3]
 write.csv(out1, "C:/Users/Maximus/Documents/R_Projekt/my_data/phenocam_locations_1.csv")
 write.csv(out2, "C:/Users/Maximus/Documents/R_Projekt/my_data/phenocam_locations_2.csv")
 
-#shape = readOGR("C:/Users/Maximus/Documents/R_Projekt/my_data/PhCam_coords.shp")
-plot(shape)
-shape@data$site
-library(mapview)
-mapviewOptions(basemaps = c("Esri.WorldShadedRelief", "OpenStreetMap.DE"),
-               raster.palette = grey.colors,
-               vector.palette = colorRampPalette(c("snow", "cornflowerblue", "grey10")),
-               na.color = "magenta",
-               layers.control.pos = "topright")
 
-mapview('OpenStreetMap.DE')
-mapview(shape, map.types = mapviewGetOption("basemaps"))
+#############################################################################
+#load ee landsat data
 
-###############load ee landsat data
 data_path <- "C:/Users/Maximus/Documents/R_Projekt/my_data/"
 Landsat_data_1_5 <- read.csv(paste0(data_path, "Landsat_1_5.csv"))
 Landsat_data_11_15 <- read.csv(paste0(data_path, "Landsat_11_15.csv"))
+
 # remove system index and .geo
 
 #Landsat_data_1_5 <- Landsat_data_1_5[,-1]
@@ -58,7 +49,7 @@ Landsat_data_11_15 <- read.csv(paste0(data_path, "Landsat_11_15.csv"))
 Landsat_data_1_5 <- merge(Landsat_data_1_5, phenos, by.x = "site", by.y = "site")
 Landsat_data_11_15 <- merge(Landsat_data_11_15, phenos, by.x = "site", by.y = "site")
 
-############################################
+#############################################################################
 
 Landsat_SR = rbind(Landsat_data_1_5, Landsat_data_11_15)
 library(stringr)
