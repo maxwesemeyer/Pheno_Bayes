@@ -5,7 +5,7 @@ library(tidyverse)
 library(rstanarm)
 library(bayesplot)
 library(loo)
-# loading the package
+# loading the packages
 library(phenocamapi)
 library(splitstackshape)
 library(dplyr)
