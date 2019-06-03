@@ -7,6 +7,7 @@
 
 library(phenocamapi)
 library(dplyr)
+library(ggplot2)
 #############################################################################
 #
 
@@ -35,9 +36,10 @@ write.csv(out2, "C:/Users/Maximus/Documents/R_Projekt/my_data/phenocam_locations
 #############################################################################
 #load ee landsat data
 
-data_path <- "C:/Users/Maximus/Documents/R_Projekt/my_data/"
+data_path <- "C:/Users/Maximus/Documents/Pheno_Bayes/"
 Landsat_data_1_5 <- read.csv(paste0(data_path, "Landsat_1_5.csv"))
 Landsat_data_11_15 <- read.csv(paste0(data_path, "Landsat_11_15.csv"))
+Landsat_3 <- read.csv(paste0(data_path, "ts_3.csv"))
 
 # remove system index and .geo
 
@@ -48,10 +50,10 @@ Landsat_data_11_15 <- read.csv(paste0(data_path, "Landsat_11_15.csv"))
 
 Landsat_data_1_5 <- merge(Landsat_data_1_5, phenos, by.x = "site", by.y = "site")
 Landsat_data_11_15 <- merge(Landsat_data_11_15, phenos, by.x = "site", by.y = "site")
-
+Landsat_3 <- merge(Landsat_3, phenos,  by.x = "site", by.y = "site")
 #############################################################################
 
-Landsat_SR = rbind(Landsat_data_1_5, Landsat_data_11_15)
+Landsat_SR = rbind(Landsat_data_1_5, Landsat_data_11_15, Landsat_3)
 library(stringr)
 Landsat_SR$EVI <- 2.5*((Landsat_SR$nir-Landsat_SR$red)/(Landsat_SR$nir+2.4*Landsat_SR$red+1))
 Landsat_SR$scene_id <- as.character(Landsat_SR$scene_id)
@@ -91,12 +93,15 @@ data_prep$year <- as.integer(data_prep$year)
 Landsat_SR[which(Landsat_SR$EVI < -0.1),"pixel_qa"]
 
 data_prep$primary_veg_type <- as.factor(data_prep$primary_veg_type)
-subset(data_prep, pixel <= 5) %>% 
-ggplot(aes(x = doy, y = vi, col = primary_veg_type)) + geom_point() + 
-  facet_wrap(facets = "elevation")
+data_prep[which(data_prep$pixel<6 | data_prep$pixel>10),] %>% 
+ggplot(aes(x = doy, y = vi, col = year)) + geom_point() + 
+  facet_wrap(facets = "pixel")
 # AG = Agriculture DB = Deciduous Broadleaf EN = Evergreen Needleleaf 
 
 range(data_prep[which(data_prep$primary_veg_type == "DB"),"pixel"])
+
+
+#||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||#
 
 
 
