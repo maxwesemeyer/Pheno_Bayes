@@ -106,7 +106,7 @@ range(data_prep[which(data_prep$primary_veg_type == "DB"),"pixel"])
 
 #||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||#
 # small subset for an easy Stan model
-data_stan_sub <- data_prep %>% filter(pixel == 3)
+data_stan_sub <- data_prep %>% filter(pixel == 3) %>% filter(doy < 200)
 data_stan_sub <- data_stan_sub[,c("vi", "doy")]
 
 

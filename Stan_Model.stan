@@ -4,7 +4,7 @@ data {
   
   int N; // number of observations
   real y[N]; // response (i.e. observations)
-  real doy[N]; // Doy is the predictor variable for the VI
+  real doy[N]; // doy (day of year) is the predictor variable for the VI
 
 }
 
@@ -27,7 +27,7 @@ model {
   beta2 ~ normal(2.4,0.1);
   beta3 ~ normal(0.15,0.01);
   beta4 ~ normal(118,1);
-  beta5 ~ normal(0.005,0.01);
+  beta5 ~ normal(0.0005,0.01);
   
   // Likelihood
    for(i in 1:N)
