@@ -1,2 +1,2 @@
-# Master Thesis Project in R 
+# Master Thesis Project in R and Stan
 in progress.....
