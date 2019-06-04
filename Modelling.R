@@ -14,6 +14,13 @@ library(loo)
 library(rstan)
 
 # Data list
-data <- list(N = length(data_prep$vi), y =  data_prep$vi)
+data <- list(N = length(data_stan_sub$vi), y =  data_stan_sub$vi, doy = data_stan_sub$doy)
 
-fit <- stan("Stan_Model.stan", data = data)
+fit_pheno <- stan("Stan_Model.stan", data = data, chains = 2, iter = 2000)
+fit_pheno
+mcmc_trace(as.array(fit_pheno), pars = c("beta1", "beta2", "beta3", 
+                                         "beta4", "beta5", "sigma"))
+
+#stan_gam()
+# Dan Simpson understanding hircharchical gams
+

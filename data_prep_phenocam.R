@@ -97,12 +97,17 @@ data_prep$primary_veg_type <- as.factor(data_prep$primary_veg_type)
 data_prep[which(data_prep$pixel<6 | data_prep$pixel>10),] %>% 
 ggplot(aes(x = doy, y = vi, col = year)) + geom_point() + 
   facet_wrap(facets = "pixel")
+
+
 # AG = Agriculture DB = Deciduous Broadleaf EN = Evergreen Needleleaf 
 
 range(data_prep[which(data_prep$primary_veg_type == "DB"),"pixel"])
 
 
 #||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||#
+# small subset for an easy Stan model
+data_stan_sub <- data_prep %>% filter(pixel == 3)
+data_stan_sub <- data_stan_sub[,c("vi", "doy")]
 
 
 
