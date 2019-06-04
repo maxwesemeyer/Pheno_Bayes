@@ -11,3 +11,9 @@ library(tidyverse)
 library(rstanarm)
 library(bayesplot)
 library(loo)
+library(rstan)
+
+# Data list
+data <- list(N = length(data_prep$vi), y =  data_prep$vi)
+
+fit <- stan("Stan_Model.stan", data = data)
