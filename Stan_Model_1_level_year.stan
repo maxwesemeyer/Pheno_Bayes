@@ -6,8 +6,8 @@ data {
   int NY; // number of years
   real y[N]; // response (i.e. observations)
   real doy[N]; // doy (day of year) is the predictor variable for the VI
-  real year[N]; // year of observation; will be used as hierarchical level
-
+  // year of observation; will be used as hierarchical level
+  int<lower=0, upper=NY> year[N]; 
 }
 
 parameters {
@@ -38,7 +38,8 @@ model {
   // Likelihood
    for(i in 1:N)
     mu[i] = (beta1) + ((beta2) - (beta5) * doy[i]) * 
-        (1 / (1 + exp(-(beta3) * (doy[i] - (beta4)))));
+        (1 / (1 + exp(-(beta3) * (doy[i] - (beta4 + phi[year[i]]
+        )))));
   
   y ~ normal(mu, sigma);
   
