@@ -43,13 +43,20 @@ ggplot(phi_df, aes(x = year, y = phi)) + geom_point() +
 # extract the hierarchical level; 2 levels
 #############################################################################
 
-phi <- fit_pheno_df[,7:ncol(fit_pheno_df)]
+phi <- fit_pheno_df[,27:(27+36)]
 
 
 phi_df <- data.frame(phi = phi %>% apply(2, mean),
                      phi %>% apply(2, function(x) quantile(x, probs= c(0.025, 0.25, 0.5, 0.75, 0.975))) %>% t())
-
+phi_df$year <- 1983:2019
 ggplot(phi_df, aes(x = year, y = phi)) + geom_point() +
   geom_hline(yintercept = 0, col = "red") + 
   geom_errorbar(aes(ymin = X2.5., ymax = X97.5.))
 
+#############################################################################
+# extract the hierarchical level; Model 3
+#############################################################################
+
+
+pheno_df <- as.data.frame(fit_pheno)
+pheno_df %>% select(starts_with("pixel_phi")) %>% apply(2,mean) %>% hist()

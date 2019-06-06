@@ -114,4 +114,10 @@ data_stan_sub_2_level <- data_prep %>% filter(pixel == 3 | pixel == 13) %>% filt
 data_stan_sub_2_level <- data_stan_sub_2_level[,c("vi", "doy", "year", "pixel")]
 
 
+data_stan_sub_3_level <- data_prep %>% filter(pixel == 3 | pixel == 10 | pixel == 11 | pixel == 13) %>% filter(doy < 200)
+data_stan_sub_3_level <- data_stan_sub_3_level[,c("vi", "doy", "year", "pixel")]
+unique(data_prep$pixel)
+
+ggplot(data_stan_sub_3_level, aes(x = doy, y = vi, col = year)) + geom_point() + 
+  facet_wrap(facets = "pixel")
                                                 

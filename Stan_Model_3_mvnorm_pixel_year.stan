@@ -28,6 +28,8 @@ parameters {
   real<lower=0> sigma; //standard deviation of the Likelihood (truncated at zero)
   vector[NY] phi; // hierarchical level to allow for SoS variation
   real<lower=0> sigma_phi; // variation of phi
+  vector[NP] pixel_phi;
+  real<lower=0> sigma_pixel_phi;
   
 
   vector<lower=0>[5] sigma_beta_raw; // to use the scaling parameters
@@ -77,16 +79,18 @@ model {
   
   beta ~ multi_normal(beta_mean, cov_matrix_beta);
     
-  //for(i in 1:5)
-  //  pixel_phi[i] ~ normal(pixel_phi_raw[i], pixel_phi_sig[i]);
   
   
   phi ~ normal(0, sigma_phi); // prior for phi; to allow for intra-annual variation in SoS
   sigma_phi ~ cauchy(0, 5); // prior for phis sd
+  
+  pixel_phi ~ normal(0, sigma_pixel_phi);
+  sigma_pixel_phi ~ cauchy(0, 5);
+  
   // Likelihood
    for(i in 1:N)
     mu[i] = (beta[1]) + ((beta[2]) - (beta[5]) * doy[i]) * 
-        (1 / (1 + exp(-(beta[3]) * (doy[i] - (beta[4] + phi[year[i]])))));
+        (1 / (1 + exp(-(beta[3]) * (doy[i] - (beta[4] + phi[year[i]] + pixel_phi[pixel[i]])))));
   
   y ~ normal(mu, sigma);
 
