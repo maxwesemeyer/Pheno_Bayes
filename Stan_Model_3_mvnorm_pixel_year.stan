@@ -72,10 +72,10 @@ model {
   // Priors
   sigma ~ normal(0, 10); // prior for sigma
 
-  sigma_beta_raw ~ normal(5, 0.1);
+  sigma_beta_raw ~ normal(0, 1);
   mean_beta_raw ~ normal(0, 1);
   
-  cor_matrix_beta ~ lkj_corr(5); // LKJ prior on the correlation matrix 
+  cor_matrix_beta ~ lkj_corr(2); // LKJ prior on the correlation matrix 
   
   beta ~ multi_normal(beta_mean, cov_matrix_beta);
     

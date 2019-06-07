@@ -97,7 +97,42 @@ data <- list(N = length(data_stan_sub_3_level$vi),
              sigma_scaling_beta = sigma_scaling)
 
 
-fit_pheno <- stan("Stan_Model_3_mvnorm_pixel_year.stan", data = data, chains = 2, iter = 2000)
+fit_pheno <- stan("Stan_Model_3_mvnorm_pixel_year.stan", data = data, chains = 1, iter = 1000)
 fit_pheno$`cor_matrix_beta[4,1]`
 mcmc_trace(as.array(fit_pheno), pars = c("sigma"))
+
+
+#############################################################################
+# fourth model
+#############################################################################
+
+# Data list
+
+data_stan_sub_3_level$year_recode <- ((data_stan_sub_3_level$year-min(data_stan_sub_3_level$year)+1))
+data_stan_sub_3_level[which(data_stan_sub_3_level$pixel == 3),"pixel_recode"] <- 1
+data_stan_sub_3_level[which(data_stan_sub_3_level$pixel == 10),"pixel_recode"] <- 2
+data_stan_sub_3_level[which(data_stan_sub_3_level$pixel == 11),"pixel_recode"] <- 3
+data_stan_sub_3_level[which(data_stan_sub_3_level$pixel == 13),"pixel_recode"] <- 4
+
+
+data_stan_sub_3_level$pixel_recode
+unique(data_stan_sub_3_level$pixel_recode)
+scaling_vector_mean <- c(0.45, 2.4 , 0.15 , 118, 0.0005)
+sigma_scaling <- c(0.1, 1, 0.1, 10, 0.1)
+
+data <- list(N = length(data_stan_sub_3_level$vi), 
+             y =  data_stan_sub_3_level$vi, 
+             doy = data_stan_sub_3_level$doy, 
+             year = data_stan_sub_3_level$year_recode, 
+             NY = as.integer(length(unique(data_stan_sub_3_level$year))),
+             NP = length(unique(data_stan_sub_3_level$pixel)), 
+             pixel = data_stan_sub_3_level$pixel_recode,
+             beta_mean_scale = scaling_vector_mean,
+             beta_sigma_scale = sigma_scaling)
+
+
+fit_pheno <- stan("Stan_Model_4_+spatialvar.stan", data = data, chains = 2, iter = 1000)
+
+mcmc_trace(as.array(fit_pheno), pars = c("sigma"))
+
 
